@@ -10,6 +10,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
     http.ServeFile(w, r, title)
 }
 
+func login(w http.ResponseWriter, r *http.Request) {
+    r.ParseForm()
+    fmt.Println("email: " + r.Form["email"][0])
+    fmt.Println("password: " + r.Form["password"][0])
+    fmt.Println(r.Form)
+    http.Redirect(w, r, "/", http.StatusFound)
+}
+
 func signUp(w http.ResponseWriter, r *http.Request) {
     r.ParseForm()
     fmt.Println("address: " + r.Form["address"][0])
@@ -18,9 +26,9 @@ func signUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
-    http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("js"))))
+    http.Handle("/public/", http.StripPrefix("/public/",http.FileServer(http.Dir("public"))))
     http.HandleFunc("/signup/submit", signUp)
-    http.HandleFunc("/", handler)
+    http.HandleFunc("/login", login)
+    http.Handle("/", http.FileServer(http.Dir("views/")))
 	http.ListenAndServe(":8082", nil)
 }
